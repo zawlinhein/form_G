@@ -1,6 +1,6 @@
-import CreateForm from "./components/CreateForm";
-import Metric from "./components/Metric";
-import FormList from "./components/FormList";
+import CreateForm from "./_components/CreateForm";
+import Metric from "./_components/Metric";
+import FormList from "./_components/FormList";
 import { Suspense } from "react";
 
 const Dashboard = () => {

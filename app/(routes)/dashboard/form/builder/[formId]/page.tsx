@@ -138,7 +138,6 @@ export default function BuilderPage() {
       </div>
 
       {/* Main Content Area */}
-      {/* Main Content Area */}
       <main className="flex-1 overflow-hidden flex">
         {/* Left Panel - Blocks Toolbar */}
         <div className="hidden lg:flex w-64 border-r border-border bg-card/50 backdrop-blur-sm flex-col">

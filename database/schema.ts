@@ -66,3 +66,6 @@ export const formResponsesRelation = relations(formResponses, ({ one }) => ({
 }));
 
 export type Form = InferSelectModel<typeof forms>;
+export type FormSetting = InferSelectModel<typeof formSettings>;
+export type FormResponse = InferSelectModel<typeof formResponses>;
+export type FormWithSetting = Form & { setting: FormSetting };
