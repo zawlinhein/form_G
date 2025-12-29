@@ -129,3 +129,18 @@ export const dummyFormFields = [
     required: true,
   },
 ];
+
+// Dummy form blocks data
+/* const formBlocks = [
+  { id: "heading", icon: Type, label: "Heading", type: "text" },
+  { id: "paragraph", icon: AlignLeft, label: "Paragraph", type: "text" },
+  { id: "text-input", icon: Type, label: "Text Input", type: "input" },
+  { id: "email", icon: Mail, label: "Email", type: "input" },
+  { id: "phone", icon: Phone, label: "Phone", type: "input" },
+  { id: "date", icon: Calendar, label: "Date", type: "input" },
+  { id: "dropdown", icon: List, label: "Dropdown", type: "input" },
+  { id: "checkbox", icon: CheckSquare, label: "Checkbox", type: "input" },
+  { id: "radio", icon: Circle, label: "Radio", type: "input" },
+  { id: "rating", icon: Star, label: "Star Rating", type: "input" },
+  { id: "image", icon: ImageIcon, label: "Image", type: "media" },
+]; */

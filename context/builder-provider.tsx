@@ -1,5 +1,7 @@
 "use client";
 import { FormWithSetting } from "@/database/schema";
+import { generateId } from "@/lib/utils";
+import { FormBlockInstance } from "@/types/form.blocks.types";
 import { useParams } from "next/navigation";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
@@ -8,8 +10,11 @@ type BuilderContextType = {
   formData: FormWithSetting | null;
   setFormData: React.Dispatch<React.SetStateAction<FormWithSetting | null>>;
 
-  blocks: [];
-  setBlocks: React.Dispatch<React.SetStateAction<[]>>;
+  blocks: FormBlockInstance[];
+  setBlocks: React.Dispatch<React.SetStateAction<FormBlockInstance[]>>;
+
+  deleteBlock: (id: string) => void;
+  copyBlock: (id: string) => void;
 };
 
 const BuilderContext = createContext<BuilderContextType | null>(null);
@@ -17,7 +22,31 @@ const BuilderContext = createContext<BuilderContextType | null>(null);
 function BuilderProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormWithSetting | null>(null);
-  const [blocks, setBlocks] = useState<any>([]);
+  const [blocks, setBlocks] = useState<FormBlockInstance[]>([]);
+
+  const deleteBlock = (id: string) => {
+    setBlocks((prev) => prev.filter((block) => block.id !== id));
+  };
+
+  const copyBlock = (id: string) => {
+    setBlocks((prev) => {
+      const blockToCopy = prev.find((block) => block.id === id);
+      if (!blockToCopy) return prev;
+
+      const newBlockInstance: FormBlockInstance = {
+        ...blockToCopy,
+        id: generateId(),
+        children: blockToCopy.children?.map((child) => ({
+          ...child,
+          id: generateId(),
+        })),
+      };
+      const newBlocksArray = [...prev];
+      const indexToAdd = prev.findIndex((block) => block.id === id) + 1;
+      newBlocksArray.splice(indexToAdd, 0, newBlockInstance);
+      return newBlocksArray;
+    });
+  };
 
   const params = useParams();
   const formId = params.formId as string;
@@ -36,7 +65,12 @@ function BuilderProvider({ children }: { children: React.ReactNode }) {
         }
         const { data } = await response.json();
         if (data) {
-          console.log(data);
+          //console.log(data);
+          setFormData(data);
+          if (data.jsonBlocks) {
+            const parsedBlocks = JSON.parse(data.jsonBlock);
+            setBlocks(parsedBlocks);
+          }
         }
       } catch (e) {
         console.error("Error while fetching form:", e);
@@ -48,7 +82,15 @@ function BuilderProvider({ children }: { children: React.ReactNode }) {
   }, [formId]);
   return (
     <BuilderContext
-      value={{ loading, formData, setFormData, blocks, setBlocks }}
+      value={{
+        loading,
+        formData,
+        setFormData,
+        blocks,
+        setBlocks,
+        deleteBlock,
+        copyBlock,
+      }}
     >
       {children}
     </BuilderContext>
