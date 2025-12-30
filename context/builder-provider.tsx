@@ -13,8 +13,20 @@ type BuilderContextType = {
   blocks: FormBlockInstance[];
   setBlocks: React.Dispatch<React.SetStateAction<FormBlockInstance[]>>;
 
+  selectedBlock: FormBlockInstance | null;
+  setSelectedBlock: React.Dispatch<
+    React.SetStateAction<FormBlockInstance | null>
+  >;
+
   deleteBlock: (id: string) => void;
   copyBlock: (id: string) => void;
+  repositionBlock: (
+    activeId: string,
+    overId: string,
+    position: "top" | "bottom"
+  ) => void;
+
+  isLastBlock: (id: string) => boolean;
 };
 
 const BuilderContext = createContext<BuilderContextType | null>(null);
@@ -23,9 +35,50 @@ function BuilderProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormWithSetting | null>(null);
   const [blocks, setBlocks] = useState<FormBlockInstance[]>([]);
+  const [selectedBlock, setSelectedBlock] = useState<FormBlockInstance | null>(
+    null
+  );
+
+  const isLastBlock = (id: string): boolean => {
+    if (blocks[blocks.length - 1].id === id) return true;
+    return false;
+  };
 
   const deleteBlock = (id: string) => {
     setBlocks((prev) => prev.filter((block) => block.id !== id));
+    if (selectedBlock?.id === id) {
+      setSelectedBlock(null);
+    }
+  };
+
+  const repositionBlock = (
+    activeId: string,
+    overId: string,
+    position: "top" | "bottom"
+  ) => {
+    setBlocks((prev) => {
+      const overIndex = prev.findIndex((block) => block.id === overId);
+      const activeIndex = prev.findIndex((block) => block.id === activeId);
+
+      if (activeIndex === -1 || overIndex === -1) return prev;
+
+      const newBlockArray = [...prev];
+      const [activeBlock] = newBlockArray.splice(activeIndex, 1);
+      if (!activeBlock) return prev;
+      let insertIndex = overIndex;
+
+      if (activeIndex < overIndex) {
+        insertIndex -= 1;
+      }
+
+      if (position === "bottom") {
+        insertIndex += 1;
+      }
+
+      newBlockArray.splice(insertIndex, 0, activeBlock);
+
+      return newBlockArray;
+    });
   };
 
   const copyBlock = (id: string) => {
@@ -71,6 +124,7 @@ function BuilderProvider({ children }: { children: React.ReactNode }) {
             const parsedBlocks = JSON.parse(data.jsonBlock);
             setBlocks(parsedBlocks);
           }
+          setLoading(false);
         }
       } catch (e) {
         console.error("Error while fetching form:", e);
@@ -88,8 +142,12 @@ function BuilderProvider({ children }: { children: React.ReactNode }) {
         setFormData,
         blocks,
         setBlocks,
+        selectedBlock,
+        setSelectedBlock,
         deleteBlock,
         copyBlock,
+        isLastBlock,
+        repositionBlock,
       }}
     >
       {children}

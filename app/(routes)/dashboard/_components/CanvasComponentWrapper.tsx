@@ -1,6 +1,5 @@
 import { formBlocks } from "@/lib/blocks";
 import { FormBlockInstance } from "@/types/form.blocks.types";
-import React from "react";
 
 type CanvasComponentWrapperPorps = {
   blockInstance: FormBlockInstance;

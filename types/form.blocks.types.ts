@@ -25,7 +25,7 @@ export type FormBlockInstance = {
   blockType: FormBlockType;
   properties?: Record<string, any>;
   children?: FormBlockInstance[];
-  isBlock: boolean;
+  isLocked: boolean;
 };
 
 export type FormBlocksTypes = {
