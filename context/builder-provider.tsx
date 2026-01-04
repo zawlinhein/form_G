@@ -25,6 +25,13 @@ type BuilderContextType = {
     overId: string,
     position: "top" | "bottom"
   ) => void;
+  updateChildBlock: (id: string, childBlocks: FormBlockInstance[]) => void;
+
+  updateChildBlockProperties: (
+    parentId: string,
+    childId: string,
+    updatedChildBlock: FormBlockInstance
+  ) => void;
 
   isLastBlock: (id: string) => boolean;
 };
@@ -100,6 +107,35 @@ function BuilderProvider({ children }: { children: React.ReactNode }) {
       return newBlocksArray;
     });
   };
+  const updateChildBlock = (id: string, childBlocks: FormBlockInstance[]) => {
+    setBlocks((prev) => {
+      const newBlocks = prev.map((block) =>
+        block.id === id ? { ...block, children: childBlocks } : block
+      );
+      return newBlocks;
+    });
+  };
+
+  const updateChildBlockProperties = (
+    parentId: string,
+    childId: string,
+    updatedChildBlock: FormBlockInstance
+  ) => {
+    console.log(updatedChildBlock);
+    setBlocks((prev) => {
+      const newBlocks = prev.map((block) =>
+        block.id === parentId
+          ? {
+              ...block,
+              children: block.children?.map((child) =>
+                child.id === childId ? updatedChildBlock : child
+              ),
+            }
+          : block
+      );
+      return newBlocks;
+    });
+  };
 
   const params = useParams();
   const formId = params.formId as string;
@@ -148,6 +184,8 @@ function BuilderProvider({ children }: { children: React.ReactNode }) {
         copyBlock,
         isLastBlock,
         repositionBlock,
+        updateChildBlock,
+        updateChildBlockProperties,
       }}
     >
       {children}

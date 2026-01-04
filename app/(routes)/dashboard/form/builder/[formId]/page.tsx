@@ -9,6 +9,7 @@ import BlockBtn from "@/components/common/BlockBtn";
 import { useBuilder } from "@/context/builder-provider";
 import FullContent from "../../../_components/FullContent";
 import MainContext from "../../../_components/MainContext";
+import BuilderProperties from "../../../_components/BuilderProperties";
 
 export default function BuilderPage() {
   const { formData } = useBuilder();
@@ -72,6 +73,13 @@ export default function BuilderPage() {
             <TabsContent value="blocks" className="mt-0 pb-4">
               <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2">
                 {layoutBlocks.map((block) => (
+                  <BlockBtn
+                    key={block.blockType}
+                    formBlock={block}
+                    disabled={isPublished ?? false}
+                  />
+                ))}
+                {fieldBlocks.map((block) => (
                   <BlockBtn
                     key={block.blockType}
                     formBlock={block}

@@ -26,7 +26,7 @@ const DragableOverlay = () => {
 
   const isCanvasLayout = dragItem?.data?.current?.isCanvasLayout as boolean;
   if (isBlockBtnElement) {
-    const blockType = dragItem?.data?.current?.blocktype as FormBlockType;
+    const blockType = dragItem?.data?.current?.blockType as FormBlockType;
     dragNode = <BlockBtnOverlay formBlock={formBlocks[blockType]} />;
   }
   if (isCanvasLayout) {

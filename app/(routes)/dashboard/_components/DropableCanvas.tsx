@@ -7,7 +7,7 @@ import { useDndMonitor, useDroppable } from "@dnd-kit/core";
 import { Plus } from "lucide-react";
 import CanvasComponentWrapper from "./CanvasComponentWrapper";
 import { SampleCanvasComponent } from "@/components/blocks/SampleCanvasComponent";
-import { useState } from "react";
+import { act, useState } from "react";
 
 const DropableCanvas = () => {
   const { blocks, setBlocks, loading, repositionBlock } = useBuilder();
@@ -21,40 +21,29 @@ const DropableCanvas = () => {
   });
   useDndMonitor({
     onDragStart: (e) => {
-      //console.log("Drag start", e);
-      const isCanvasComponent = e.active.data?.current
-        ?.isCanvasComponent as boolean;
-      if (isCanvasComponent) {
-        setIsDisable(true);
-      } else setIsDisable(false);
+      console.log("Drag start", e);
+      const isRowLayout = (e.active.data?.current?.blockType ===
+        "RowLayout") as boolean;
+      const isBlockBtnElement = e.active.data?.current
+        ?.isBlockBtnElement as boolean;
+      if (isRowLayout && isBlockBtnElement) {
+        setIsDisable(false);
+      } else setIsDisable(true);
     },
     onDragEnd: (e) => {
+      const { active, over } = e;
+      if (!active || !over) return;
       //console.log("Drag end", e);
-      if (e.over) {
-        const activeBlockType = e.active.data?.current
-          ?.blocktype as FormBlockType;
-        const isOverDropableCanvas = e.over.data?.current
-          ?.isDropableCanvas as boolean;
 
-        if (activeBlockType === "RowLayout" && isOverDropableCanvas) {
-          const newBlockInstance: FormBlockInstance = formBlocks[
-            activeBlockType
-          ].createFormBlockInstance(generateId());
-          setBlocks((prev) => [...prev, newBlockInstance]);
-        }
+      const activeBlockType = active.data?.current?.blockType as FormBlockType;
+      const isOverDropableCanvas = over.data?.current
+        ?.isDropableCanvas as boolean;
 
-        const isCanvasComponent = e.active.data?.current
-          ?.isCanvasComponent as boolean;
-        const insertPosition = e.over.data?.current?.insertPosition;
-        if (isCanvasComponent) {
-          const activeId = e.active.data?.current?.blockId as string;
-          const overId = e.over.data?.current?.blockId as string;
-          if (insertPosition === "top") {
-            repositionBlock(activeId, overId, "top");
-          } else if (insertPosition === "bottom") {
-            repositionBlock(activeId, overId, "bottom");
-          }
-        }
+      if (activeBlockType === "RowLayout" && isOverDropableCanvas) {
+        const newBlockInstance: FormBlockInstance = formBlocks[
+          activeBlockType
+        ].createFormBlockInstance(generateId());
+        setBlocks((prev) => [...prev, newBlockInstance]);
       }
     },
   });

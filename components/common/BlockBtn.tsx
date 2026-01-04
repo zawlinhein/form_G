@@ -12,7 +12,7 @@ const BlockBtn = ({ formBlock, disabled }: BlockBtnProps) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `block-btn-${formBlock.blockType}`,
     disabled: disabled,
-    data: { blocktype: formBlock.blockType, isBlockBtnElement: true },
+    data: { blockType: formBlock.blockType, isBlockBtnElement: true },
   });
 
   const { icon: Icon, label } = formBlock.blockBtnElement;

@@ -1,5 +1,6 @@
 import React from "react";
 import DropableCanvas from "./DropableCanvas";
+import BuilderProperties from "./BuilderProperties";
 
 const MainContext = () => {
   return (
@@ -10,6 +11,7 @@ const MainContext = () => {
           <DropableCanvas />
         </div>
       </div>
+      <BuilderProperties />
     </div>
   );
 };
