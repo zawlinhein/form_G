@@ -76,25 +76,17 @@ function RadioSelectCanvasComponent({
   const radioBlockInstance = blockInstance as RadioBlockInstance;
   const { label, options, required } =
     radioBlockInstance.properties as Properties;
-  const isSelected = false;
   return (
-    <div
-      className={`group relative ${
-        isSelected ? "ring-2 ring-primary rounded-lg" : ""
-      }`}
-    >
+    <div className="group relative cursor-pointer">
       <div className="space-y-3 border border-border rounded-lg p-4 transition-colors ">
         <label className="block font-medium text-foreground">
           {label}
           {required && <span className="text-destructive ml-1">*</span>}
         </label>
         <div className="space-y-3">
-          <RadioGroup>
+          <RadioGroup disabled>
             {options.map((option, idx) => (
-              <div
-                key={idx}
-                className="flex items-center space-x-2 cursor-pointer"
-              >
+              <div key={idx} className="flex items-center space-x-2">
                 <RadioGroupItem value={option} id={option} />
                 <label
                   key={idx}
@@ -108,27 +100,47 @@ function RadioSelectCanvasComponent({
           </RadioGroup>
         </div>
       </div>
-
-      {isSelected && (
-        <div className="absolute -right-2 top-2 flex gap-1 bg-card border border-border rounded-lg shadow-lg p-1">
-          <Button size="icon" variant="ghost" className="h-8 w-8">
-            <Settings className="w-4 h-4" />
-          </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8 text-destructive hover:text-destructive"
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
-        </div>
-      )}
     </div>
   );
 }
 
-function RadioSelectFormComponent() {
-  return <>RadioSelectFormComponent</>;
+function RadioSelectFormComponent({
+  blockInstance,
+}: {
+  blockInstance: FormBlockInstance;
+}) {
+  const { properties } = blockInstance as RadioBlockInstance;
+  const { label, required, options } = properties;
+  return (
+    <div className={"group relative"}>
+      <div className="space-y-3 border border-border rounded-lg p-4 transition-colors ">
+        <label className="block font-medium text-foreground">
+          {label}
+          {required && <span className="text-destructive ml-1">*</span>}
+        </label>
+        <div className="space-y-3">
+          <RadioGroup>
+            {options.map((option, idx) => (
+              <div key={idx} className="flex items-center space-x-2">
+                <RadioGroupItem
+                  value={option}
+                  id={`form-${option}`}
+                  className="cursor-pointer"
+                />
+                <label
+                  key={idx}
+                  className="flex items-center gap-3 cursor-pointer"
+                  htmlFor={`form-${option}`}
+                >
+                  <span className="text-foreground">{option}</span>
+                </label>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function RadioSelectPropertiesComponent({
@@ -139,7 +151,7 @@ function RadioSelectPropertiesComponent({
   parentId?: string;
 }) {
   const { updateChildBlockProperties } = useBuilder();
-  const { id, isLocked, properties } = blockInstance as RadioBlockInstance;
+  const { properties } = blockInstance as RadioBlockInstance;
   const form = useForm<RadioPropertiesSchemaType>({
     resolver: zodResolver(RadioPropertiesSchema),
     mode: "onBlur",
@@ -159,7 +171,6 @@ function RadioSelectPropertiesComponent({
   const setChanges = (value: RadioPropertiesSchemaType) => {
     if (!parentId) return;
     const updatedChildBlock = { ...blockInstance, properties: value };
-    console.log(updatedChildBlock);
     updateChildBlockProperties(parentId, blockInstance.id, updatedChildBlock);
   };
 

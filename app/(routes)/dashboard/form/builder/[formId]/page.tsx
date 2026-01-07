@@ -10,6 +10,7 @@ import { useBuilder } from "@/context/builder-provider";
 import FullContent from "../../../_components/FullContent";
 import MainContext from "../../../_components/MainContext";
 import BuilderProperties from "../../../_components/BuilderProperties";
+import Preview from "../../../_components/Preview";
 
 export default function BuilderPage() {
   const { formData } = useBuilder();
@@ -20,12 +21,7 @@ export default function BuilderPage() {
   const fieldBlocks = Object.values(formBlocks).filter(
     (block) => block.blockCategory === "Field"
   );
-  const [selectedField, setSelectedField] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("blocks");
-
-  const selectedFieldData = dummyFormFields.find(
-    (field) => field.id === selectedField
-  );
 
   return (
     <>
@@ -44,14 +40,7 @@ export default function BuilderPage() {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 bg-transparent"
-                >
-                  <Eye className="w-4 h-4" />
-                  <span className="hidden sm:inline">Preview</span>
-                </Button>
+                <Preview />
                 <Button
                   variant="outline"
                   size="sm"

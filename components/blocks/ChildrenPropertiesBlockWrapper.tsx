@@ -12,7 +12,7 @@ const ChildrenPropertiesBlockWrapper = ({
   const PropertiesComponent =
     formBlocks[blockInstance.blockType].propertiesComponent;
   return (
-    <div>
+    <div className="border-2 border-border rounded p-2">
       <PropertiesComponent blockInstance={blockInstance} parentId={parentId} />
     </div>
   );

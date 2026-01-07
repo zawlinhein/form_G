@@ -7,6 +7,7 @@ import {
 import {
   BetweenHorizontalStart,
   Copy,
+  Delete,
   GripVertical,
   Plus,
   Rows3,
@@ -26,6 +27,7 @@ import { useEffect, useState } from "react";
 import { formBlocks } from "@/lib/blocks";
 import ChildrenCanvasBlockWrapper from "./ChildrenCanvasBlockWrapper";
 import ChildrenPropertiesBlockWrapper from "./ChildrenPropertiesBlockWrapper";
+import ChildrenFormComponentWrapper from "./ChildrenFormComponentWrapper";
 
 const blockCategory: FormCategoryType = "Layout";
 const blockType: FormBlockType = "RowLayout";
@@ -246,7 +248,7 @@ function RowLayoutCanvasComponent({
                         deleteChildBlock(block.id);
                       }}
                     >
-                      <X />
+                      <Trash2 />
                     </Button>
                   )}
                 </div>
@@ -278,8 +280,39 @@ function RowLayoutCanvasComponent({
     </div>
   );
 }
-function RowLayoutFormComponent() {
-  return <div>asdf</div>;
+function RowLayoutFormComponent({
+  blockInstance,
+}: {
+  blockInstance: FormBlockInstance;
+}) {
+  const {} = blockInstance;
+  const childBlocks = blockInstance.children || [];
+  return (
+    <div className={cn("group relative")}>
+      <div
+        className={cn(
+          "border border-dashed border-border rounded-lg p-4 transition-colors"
+        )}
+      >
+        <div className={`gap-4`}>
+          {childBlocks.length === 0 ? (
+            <Placeholder id={blockInstance.id} />
+          ) : (
+            <div className="space-y-4">
+              {childBlocks.map((block) => (
+                <div key={block.id} className="relative">
+                  <ChildrenFormComponentWrapper
+                    key={block.id}
+                    blockInstance={block}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
 function RowLayoutPropertiesComponent({
   blockInstance,
