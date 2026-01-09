@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
+import "@smastrom/react-rating/style.css";
 
 export const dm_sans = DM_Sans({
   subsets: ["latin"],

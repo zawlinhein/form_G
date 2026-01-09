@@ -154,9 +154,8 @@ function BuilderProvider({ children }: { children: React.ReactNode }) {
         }
         const { data } = await response.json();
         if (data) {
-          //console.log(data);
           setFormData(data);
-          if (data.jsonBlocks) {
+          if (data.jsonBlock) {
             const parsedBlocks = JSON.parse(data.jsonBlock);
             setBlocks(parsedBlocks);
           }

@@ -11,6 +11,9 @@ import FullContent from "../../../_components/FullContent";
 import MainContext from "../../../_components/MainContext";
 import BuilderProperties from "../../../_components/BuilderProperties";
 import Preview from "../../../_components/Preview";
+import { AiGenerateBtn } from "@/components/blocks/AiGenerateBtn";
+import SaveForm from "../../../_components/SaveForm";
+import PublishForm from "../../../_components/PublishForm";
 
 export default function BuilderPage() {
   const { formData } = useBuilder();
@@ -40,22 +43,10 @@ export default function BuilderPage() {
 
               {/* Action Buttons */}
               <div className="flex items-center gap-2">
+                <AiGenerateBtn />
                 <Preview />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-2 bg-transparent"
-                >
-                  <Save className="w-4 h-4" />
-                  <span className="hidden sm:inline">Save</span>
-                </Button>
-                <Button
-                  size="sm"
-                  className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  <Send className="w-4 h-4" />
-                  <span className="hidden sm:inline">Publish</span>
-                </Button>
+                <SaveForm />
+                <PublishForm />
               </div>
             </div>
 

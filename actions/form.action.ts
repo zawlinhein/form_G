@@ -128,7 +128,7 @@ export const createForm = async (
         userName: user.given_name!,
         name: data.name,
         description: data.description || "",
-        jsonBlock: [],
+        jsonBlock: "[]",
         settingId: formSetting.id,
       })
       .returning();
@@ -170,6 +170,106 @@ export const getAllFormsByUser = async (): Promise<ActionResponse<Form[]>> => {
     return {
       success: false,
       message: "An unexpected error occurred while fetching forms.",
+    };
+  }
+};
+
+export const saveForm = async (data: {
+  formId: string;
+  jsonBlocks: string;
+}): Promise<ActionResponse<Form>> => {
+  try {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+    if (!user) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    const { formId, jsonBlocks } = data;
+
+    if (!formId || !jsonBlocks) {
+      return {
+        success: false,
+        message: "Invalid data to save form.",
+      };
+    }
+
+    const [updatedForm] = await db
+      .update(forms)
+      .set({
+        jsonBlock: jsonBlocks,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(forms.id, formId),
+          eq(forms.userId, user.id) // Ensure the user owns the form
+        )
+      )
+      .returning();
+    return {
+      success: true,
+      message: "Form saved successfully",
+      data: updatedForm,
+    };
+  } catch (error) {
+    console.error("Error creating form:", error);
+    return {
+      success: false,
+      message: "An unexpected error occurred while creating the form.",
+    };
+  }
+};
+
+export const publishForm = async (data: {
+  formId: string;
+  published: boolean;
+}): Promise<ActionResponse<Form>> => {
+  try {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+    if (!user) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    const { formId, published } = data;
+
+    if (!formId) {
+      return {
+        success: false,
+        message: "Invalid data to publish form.",
+      };
+    }
+
+    const [updatedForm] = await db
+      .update(forms)
+      .set({
+        published: published,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(forms.id, formId),
+          eq(forms.userId, user.id) // Ensure the user owns the form
+        )
+      )
+      .returning();
+    return {
+      success: true,
+      message: "Form published successfully",
+      data: updatedForm,
+    };
+  } catch (error) {
+    console.error("Error publishing form:", error);
+    return {
+      success: false,
+      message: "An unexpected error occurred while publishing the form.",
     };
   }
 };

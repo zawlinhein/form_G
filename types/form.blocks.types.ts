@@ -2,7 +2,13 @@ import React from "react";
 
 export type FormCategoryType = "Layout" | "Field";
 
-export type FormBlockType = "RowLayout" | "RadioSelect" | "TextInput";
+export type FormBlockType =
+  | "RowLayout"
+  | "RadioSelect"
+  | "TextInput"
+  | "TextArea"
+  | "Rating"
+  | "TextContent";
 
 export type FormBlock = {
   blockCategory: FormCategoryType;

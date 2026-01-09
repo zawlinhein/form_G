@@ -17,14 +17,14 @@ export const formSettings = pgTable("form_settings", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const forms = pgTable("users", {
+export const forms = pgTable("forms", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: varchar("user_id", { length: 255 }).notNull(),
   userName: varchar("user_name", { length: 255 }).notNull(),
 
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description").default(""),
-  jsonBlock: text("json_block").notNull().array(),
+  jsonBlock: text("json_block").notNull().default("[]"),
   views: integer("views").default(0).notNull(),
   responses: integer("responses").default(0).notNull(),
   published: boolean("published").default(false).notNull(),

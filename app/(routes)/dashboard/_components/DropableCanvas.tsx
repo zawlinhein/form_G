@@ -10,7 +10,7 @@ import { SampleCanvasComponent } from "@/components/blocks/SampleCanvasComponent
 import { act, useState } from "react";
 
 const DropableCanvas = () => {
-  const { blocks, setBlocks, loading, repositionBlock } = useBuilder();
+  const { blocks, setBlocks, loading, formData } = useBuilder();
   const [isDisable, setIsDisable] = useState(false);
   const { setNodeRef, isOver } = useDroppable({
     id: "Dropable-Canvas",
