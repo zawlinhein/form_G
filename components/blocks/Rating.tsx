@@ -3,6 +3,8 @@ import {
   FormBlockInstance,
   FormBlockType,
   FormCategoryType,
+  FormValues,
+  useFormProps,
 } from "@/types/form.blocks.types";
 import { Star } from "lucide-react";
 import { Rating } from "@smastrom/react-rating";
@@ -16,7 +18,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormRegister } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "../ui/switch";
 import { useBuilder } from "@/context/builder-provider";
@@ -79,18 +81,27 @@ export function RatingCanvasComponent({
 }
 export function RatingFormComponent({
   blockInstance,
+  useFormProps,
 }: {
   blockInstance: FormBlockInstance;
+  useFormProps?: useFormProps;
 }) {
   const { id, properties } = blockInstance as RatingBlockInstance;
   const { label, required } = properties;
   return (
-    <div className="cursor-pointer flex flex-row items-center gap-3 border border-border rounded-lg p-4">
-      <label className="block font-medium text-foreground" htmlFor={id}>
-        {label}
-        {required && <span className="text-destructive ml-1">*</span>}
-      </label>
-      <InteractiveRating />
+    <div className="cursor-pointer gap-3 border border-border rounded-lg p-4">
+      <div className="flex flex-row items-center gap-3">
+        <label className="block font-medium text-foreground" htmlFor={id}>
+          {label}
+          {required && <span className="text-destructive ml-1">*</span>}
+        </label>
+        <InteractiveRating useFormProps={useFormProps} id={id} />
+      </div>
+      {useFormProps && useFormProps.errors && useFormProps.errors[id] && (
+        <p className="text-destructive mt-1 text-sm">
+          {useFormProps.errors[id]}
+        </p>
+      )}
     </div>
   );
 }

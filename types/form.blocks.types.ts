@@ -1,4 +1,12 @@
 import React from "react";
+import { UseFormRegister, UseFormSetValue } from "react-hook-form";
+
+export type FormValues = Record<string, string>;
+export type useFormProps = {
+  register: UseFormRegister<FormValues>;
+  setValue: UseFormSetValue<FormValues>;
+  errors?: Record<string, string>;
+};
 
 export type FormCategoryType = "Layout" | "Field";
 
@@ -22,7 +30,10 @@ export type FormBlock = {
   };
 
   canvasComponent: React.FC<{ blockInstance: FormBlockInstance }>;
-  formComponent: React.FC<{ blockInstance: FormBlockInstance }>;
+  formComponent: React.FC<{
+    blockInstance: FormBlockInstance;
+    useFormProps?: useFormProps;
+  }>;
   propertiesComponent: React.FC<{
     blockInstance: FormBlockInstance;
     parentId?: string;

@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/dialog";
 import { useBuilder } from "@/context/builder-provider";
 import { Eye } from "lucide-react";
-import React from "react";
 import FormComponentWrapper from "./FormComponentWrapper";
 
 const Preview = () => {

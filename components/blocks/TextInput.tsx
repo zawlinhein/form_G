@@ -3,6 +3,8 @@ import {
   FormBlockInstance,
   FormBlockType,
   FormCategoryType,
+  FormValues,
+  useFormProps,
 } from "@/types/form.blocks.types";
 import { TextCursorInput } from "lucide-react";
 import { Input } from "../ui/input";
@@ -15,7 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormRegister } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Switch } from "../ui/switch";
 import { useBuilder } from "@/context/builder-provider";
@@ -84,22 +86,32 @@ export function TextInputCanvasComponent({
 }
 export function TextInputFormComponent({
   blockInstance,
+  useFormProps,
 }: {
   blockInstance: FormBlockInstance;
+  useFormProps?: useFormProps;
 }) {
   const { id, properties } = blockInstance as TextInputBlockInstance;
   const { label, placeholder, required } = properties;
   return (
-    <div className="cursor-pointer flex flex-row items-center gap-3 border border-border rounded-lg p-4">
-      <label className="block font-medium text-foreground" htmlFor={id}>
-        {label}
-        {required && <span className="text-destructive ml-1">*</span>}
-      </label>
-      <Input
-        id={id}
-        placeholder={placeholder}
-        onClick={(e) => e.stopPropagation()}
-      />
+    <div className="cursor-pointer gap-3 border border-border rounded-lg p-4">
+      <div className="flex flex-row items-center gap-3">
+        <label className="block font-medium text-foreground" htmlFor={id}>
+          {label}
+          {required && <span className="text-destructive ml-1">*</span>}
+        </label>
+        <Input
+          {...(useFormProps && useFormProps.register(id))}
+          id={id}
+          placeholder={placeholder}
+          onClick={(e) => e.stopPropagation()}
+        />
+      </div>
+      {useFormProps && useFormProps.errors && useFormProps.errors[id] && (
+        <p className="text-destructive mt-1 text-sm">
+          {useFormProps.errors[id]}
+        </p>
+      )}
     </div>
   );
 }

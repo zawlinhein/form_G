@@ -3,6 +3,8 @@ import {
   FormBlockInstance,
   FormBlockType,
   FormCategoryType,
+  FormValues,
+  useFormProps,
 } from "@/types/form.blocks.types";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,11 +19,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Circle, GripVertical, Plus, Settings, Trash2 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, UseFormRegister } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useBuilder } from "@/context/builder-provider";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Switch } from "../ui/switch";
 
 const blockCategory: FormCategoryType = "Field";
@@ -106,10 +108,12 @@ function RadioSelectCanvasComponent({
 
 function RadioSelectFormComponent({
   blockInstance,
+  useFormProps,
 }: {
   blockInstance: FormBlockInstance;
+  useFormProps?: useFormProps;
 }) {
-  const { properties } = blockInstance as RadioBlockInstance;
+  const { id, properties } = blockInstance as RadioBlockInstance;
   const { label, required, options } = properties;
   return (
     <div className={"group relative"}>
@@ -119,7 +123,12 @@ function RadioSelectFormComponent({
           {required && <span className="text-destructive ml-1">*</span>}
         </label>
         <div className="space-y-3">
-          <RadioGroup>
+          <RadioGroup
+            onValueChange={(value) =>
+              useFormProps &&
+              useFormProps.setValue(id, value, { shouldDirty: true })
+            }
+          >
             {options.map((option, idx) => (
               <div key={idx} className="flex items-center space-x-2">
                 <RadioGroupItem
@@ -137,6 +146,11 @@ function RadioSelectFormComponent({
               </div>
             ))}
           </RadioGroup>
+          {useFormProps && useFormProps.errors && useFormProps.errors[id] && (
+            <p className="text-destructive mt-1 text-sm">
+              {useFormProps.errors[id]}
+            </p>
+          )}
         </div>
       </div>
     </div>

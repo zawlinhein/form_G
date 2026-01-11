@@ -1,6 +1,12 @@
 "use server";
 import { db } from "@/database/db";
-import { Form, forms, formSettings } from "@/database/schema";
+import {
+  Form,
+  FormResponse,
+  formResponses,
+  forms,
+  formSettings,
+} from "@/database/schema";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { count, eq, sum, gt, and } from "drizzle-orm";
 import { z } from "zod";
@@ -270,6 +276,123 @@ export const publishForm = async (data: {
     return {
       success: false,
       message: "An unexpected error occurred while publishing the form.",
+    };
+  }
+};
+
+export const getPublicFormById = async (
+  formId: string
+): Promise<ActionResponse<Form>> => {
+  try {
+    if (!formId) {
+      return {
+        success: false,
+        message: "Form ID is required.",
+      };
+    }
+
+    const form = await db.query.forms.findFirst({
+      where: and(eq(forms.id, formId), eq(forms.published, true)),
+    });
+
+    if (!form) {
+      return {
+        success: false,
+        message: "Form not found or is not published.",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Form fetched successfully",
+      data: form,
+    };
+  } catch (error) {
+    console.error("Error fetching public form:", error);
+    return {
+      success: false,
+      message: "An unexpected error occurred while fetching the form.",
+    };
+  }
+};
+
+export const saveResponse = async (data: {
+  formId: string;
+  responses: string;
+}): Promise<ActionResponse> => {
+  try {
+    const { formId, responses } = data;
+
+    if (!formId || !responses) {
+      return {
+        success: false,
+        message: "Invalid data to save response.",
+      };
+    }
+
+    const [response] = await db
+      .insert(formResponses)
+      .values({
+        formId: formId,
+        responseData: responses,
+        createdAt: new Date(),
+      })
+      .returning();
+
+    if (!response) {
+      return {
+        success: false,
+        message: "Failed to save response.",
+      };
+    }
+    return {
+      success: true,
+      message: "Response saved successfully",
+    };
+  } catch (error) {
+    console.error("Error saving response:", error);
+    return {
+      success: false,
+      message: "An unexpected error occurred while saving the response.",
+    };
+  }
+};
+
+export const getResponsesByFormId = async (
+  formId: string
+): Promise<ActionResponse<FormResponse[]>> => {
+  try {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+    if (!user) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    if (!formId) {
+      return {
+        success: false,
+        message: "Form ID is required.",
+      };
+    }
+
+    const responses = await db.query.formResponses.findMany({
+      where: eq(formResponses.formId, formId),
+      orderBy: (formResponses, { desc }) => [desc(formResponses.createdAt)],
+    });
+
+    return {
+      success: true,
+      message: "Responses fetched successfully",
+      data: responses,
+    };
+  } catch (error) {
+    console.error("Error fetching responses:", error);
+    return {
+      success: false,
+      message: "An unexpected error occurred while fetching responses.",
     };
   }
 };

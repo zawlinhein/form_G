@@ -3,6 +3,8 @@ import {
   FormBlockInstance,
   FormBlockType,
   FormCategoryType,
+  FormValues,
+  useFormProps,
 } from "@/types/form.blocks.types";
 import {
   BetweenHorizontalStart,
@@ -28,6 +30,7 @@ import { formBlocks } from "@/lib/blocks";
 import ChildrenCanvasBlockWrapper from "./ChildrenCanvasBlockWrapper";
 import ChildrenPropertiesBlockWrapper from "./ChildrenPropertiesBlockWrapper";
 import ChildrenFormComponentWrapper from "./ChildrenFormComponentWrapper";
+import { UseFormRegister } from "react-hook-form";
 
 const blockCategory: FormCategoryType = "Layout";
 const blockType: FormBlockType = "RowLayout";
@@ -282,10 +285,11 @@ function RowLayoutCanvasComponent({
 }
 function RowLayoutFormComponent({
   blockInstance,
+  useFormProps,
 }: {
   blockInstance: FormBlockInstance;
+  useFormProps?: useFormProps;
 }) {
-  const {} = blockInstance;
   const childBlocks = blockInstance.children || [];
   return (
     <div className={cn("group relative")}>
@@ -304,6 +308,7 @@ function RowLayoutFormComponent({
                   <ChildrenFormComponentWrapper
                     key={block.id}
                     blockInstance={block}
+                    useFormProps={useFormProps}
                   />
                 </div>
               ))}

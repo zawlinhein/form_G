@@ -9,16 +9,18 @@ const Header = () => {
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <div className="flex items-center gap-2">
-              <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">
-                  F
+            <Link href={"/dashboard"}>
+              <div className="flex items-center gap-2">
+                <div className="h-9 w-9 rounded-lg bg-primary flex items-center justify-center">
+                  <span className="text-primary-foreground font-bold text-lg">
+                    F
+                  </span>
+                </div>
+                <span className="text-xl font-semibold text-foreground">
+                  Form-G
                 </span>
               </div>
-              <span className="text-xl font-semibold text-foreground">
-                Form-G
-              </span>
-            </div>
+            </Link>
             <nav className="hidden md:flex items-center gap-1">
               <Button
                 variant="ghost"

@@ -29,8 +29,6 @@ const HeaderProfile = async () => {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>Profile</DropdownMenuItem>
-        <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem>
           <LogoutLink>Logout</LogoutLink>
         </DropdownMenuItem>

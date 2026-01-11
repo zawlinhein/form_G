@@ -42,7 +42,7 @@ export const formResponses = pgTable("form_responses", {
   formId: uuid("form_id").references(() => forms.id, {
     onDelete: "cascade",
   }),
-  responseData: text("response_data").notNull().array(),
+  responseData: text("response_data").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
