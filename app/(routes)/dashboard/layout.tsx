@@ -7,7 +7,6 @@ export default function DashboardLayout({
 }>) {
   return (
     <div className="flex flex-col min-h-screen w-full">
-      <Header />
       <div className="w-full flex-1">{children}</div>
     </div>
   );

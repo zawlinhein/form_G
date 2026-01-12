@@ -396,3 +396,43 @@ export const getResponsesByFormId = async (
     };
   }
 };
+
+export const deleteFormById = async (
+  formId: string
+): Promise<ActionResponse> => {
+  try {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+    if (!user) {
+      return {
+        success: false,
+        message: "User not authenticated",
+      };
+    }
+
+    if (!formId) {
+      return {
+        success: false,
+        message: "Form ID is required.",
+      };
+    }
+
+    await db.delete(forms).where(
+      and(
+        eq(forms.id, formId),
+        eq(forms.userId, user.id) // Ensure the user owns the form
+      )
+    );
+
+    return {
+      success: true,
+      message: "Form deleted successfully",
+    };
+  } catch (error) {
+    console.error("Error deleting form:", error);
+    return {
+      success: false,
+      message: "An unexpected error occurred while deleting the form.",
+    };
+  }
+};

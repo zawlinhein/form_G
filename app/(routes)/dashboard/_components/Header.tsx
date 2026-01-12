@@ -2,8 +2,9 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import HeaderProfile from "./HeaderProfile";
 import { Suspense } from "react";
+import ThemeSwitch from "./ThemeSwitch";
 
-const Header = () => {
+const Header = async ({ formId }: { formId: string }) => {
   return (
     <header className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-10">
       <div className="container mx-auto px-6 py-4">
@@ -22,24 +23,29 @@ const Header = () => {
               </div>
             </Link>
             <nav className="hidden md:flex items-center gap-1">
-              <Button
-                variant="ghost"
-                className="text-foreground font-medium bg-muted"
-              >
+              <Button variant="ghost" className="text-muted-foreground">
                 <Link href={"/dashboard"}>Dashboard</Link>
               </Button>
-              <Button variant="ghost" className="text-muted-foreground">
-                <Link href={"/builder"}>Builder</Link>
-              </Button>
-              <Button variant="ghost" className="text-muted-foreground">
-                <Link href={"/reponse"}>Reponse</Link>
-              </Button>
-              <Button variant="ghost" className="text-muted-foreground">
-                <Link href={"/setting"}>Setting</Link>
-              </Button>
+              {formId && (
+                <>
+                  <Button variant="ghost" className="">
+                    <Link href={`/dashboard/form/${formId}/builder`}>
+                      Builder
+                    </Link>
+                  </Button>
+                  <Button variant="ghost" className="text-muted-foreground">
+                    <Link href={`/dashboard/form/${formId}/response`}>
+                      Response
+                    </Link>
+                  </Button>
+                </>
+              )}
             </nav>
           </div>
           <div className="flex items-center gap-3">
+            <div>
+              <ThemeSwitch />
+            </div>
             <Suspense fallback={<div>Loading...</div>}>
               <HeaderProfile />
             </Suspense>

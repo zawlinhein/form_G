@@ -31,7 +31,7 @@ const CreateForm = () => {
   >(async (prevState: ActionResponse<Form>, formData: FormData) => {
     const result = await createForm(formData);
     if (result.success) {
-      router.push(`/dashboard/form/builder/${result.data?.id}`);
+      router.push(`/dashboard/form/${result.data?.id}/builder`);
       setIsOpen(false);
     }
     return result;

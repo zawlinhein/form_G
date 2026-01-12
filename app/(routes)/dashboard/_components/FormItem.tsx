@@ -10,7 +10,9 @@ import {
 import { FileText, MessageSquare, MoreHorizontal } from "lucide-react";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useTransition } from "react";
+import { deleteFormById } from "@/actions/form.action";
+import { toast } from "sonner";
 
 export type FormItemProps = {
   id: string;
@@ -28,9 +30,31 @@ const FormItem = ({
   responses,
 }: FormItemProps) => {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const onClick = useCallback(() => {
-    router.push(`/dashboard/form/builder/${id}`);
+    router.push(`/dashboard/form/${id}/builder`);
   }, []);
+  const onResponseClick = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    router.push(`/dashboard/form/${id}/response`);
+  }, []);
+
+  const onDelete = (e: React.MouseEvent<HTMLElement>) => {
+    e.stopPropagation();
+    startTransition(async () => {
+      try {
+        const res = await deleteFormById(id);
+        if (res.success) {
+          toast.success("Form deleted successfully");
+          router.refresh();
+        } else {
+          toast.error("Failed to delete form: " + res.message);
+        }
+      } catch (e) {
+        toast.error("Failed to delete form");
+      }
+    });
+  };
   return (
     <Card
       className="group bg-card/80 backdrop-blur-sm border-border shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 overflow-hidden"
@@ -51,10 +75,13 @@ const FormItem = ({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem>Duplicate</DropdownMenuItem>
-                <DropdownMenuItem>Share</DropdownMenuItem>
-                <DropdownMenuItem className="text-destructive">
+                <DropdownMenuItem onClick={onResponseClick}>
+                  Response
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-destructive"
+                  onClick={onDelete}
+                >
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -87,7 +114,7 @@ const FormItem = ({
                 {responses}
               </span>
             </div>
-            <span className="text-xs">{format(createdAt, "dd mm yyyy")}</span>
+            <span className="text-xs">{format(createdAt, "dd MM yyyy")}</span>
           </div>
         </div>
       </CardContent>

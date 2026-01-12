@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Eye, Save, Send } from "lucide-react";
+import { ExternalLink, Eye, Save, Send } from "lucide-react";
 import { dummyFormFields } from "@/constants";
 import { formBlocks } from "@/lib/blocks";
 import BlockBtn from "@/components/common/BlockBtn";
@@ -14,9 +14,11 @@ import Preview from "../../../_components/Preview";
 import { AiGenerateBtn } from "@/components/blocks/AiGenerateBtn";
 import SaveForm from "../../../_components/SaveForm";
 import PublishForm from "../../../_components/PublishForm";
+import { toast } from "sonner";
 
 export default function BuilderPage() {
   const { formData } = useBuilder();
+  const NEXT_PUBLIC_URL = process.env.NEXT_PUBLIC_URL!;
   const isPublished = formData?.published;
   const layoutBlocks = Object.values(formBlocks).filter(
     (block) => block.blockCategory === "Layout"
@@ -25,6 +27,17 @@ export default function BuilderPage() {
     (block) => block.blockCategory === "Field"
   );
   const [activeTab, setActiveTab] = useState("blocks");
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `${NEXT_PUBLIC_URL}/public/submit/${formData?.id}`
+      );
+      toast.success("Form link copied to clipboard!");
+    } catch (e) {
+      toast.error("Failed to copy link.");
+    }
+  };
 
   return (
     <>
@@ -47,6 +60,17 @@ export default function BuilderPage() {
                 <Preview />
                 <SaveForm />
                 <PublishForm />
+                {isPublished && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 bg-transparent"
+                    onClick={copyLink}
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span className="hidden sm:inline">Copy Public Link</span>
+                  </Button>
+                )}
               </div>
             </div>
 

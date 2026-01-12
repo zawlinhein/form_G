@@ -1,11 +1,13 @@
 "use client";
 import { saveResponse } from "@/actions/form.action";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { formBlocks } from "@/lib/blocks";
 import { FormBlockInstance, FormValues } from "@/types/form.blocks.types";
 import { is } from "drizzle-orm";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { CheckCircle2 } from "lucide-react";
 
 const PublicFormBlockWrapper = ({
   formId,
@@ -15,6 +17,7 @@ const PublicFormBlockWrapper = ({
   formId: string;
 }) => {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const { register, handleSubmit, setValue } = useForm<FormValues>();
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setErrors({});
@@ -41,9 +44,31 @@ const PublicFormBlockWrapper = ({
         alert(`Error submitting form: ${result.message}`);
         return;
       }
-      alert("Form submitted successfully!");
+      setIsSubmitted(true);
     }
   };
+
+  if (isSubmitted) {
+    return (
+      <div className="container mx-auto px-6 py-16 max-w-2xl">
+        <Card className="p-8 text-center border-primary/50 bg-primary/5">
+          <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="h-8 w-8 text-green-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-foreground mb-3">
+            Thank You!
+          </h2>
+          <p className="text-muted-foreground mb-6">
+            Your response has been submitted successfully. We appreciate your
+            time.
+          </p>
+          <Button onClick={() => setIsSubmitted(false)} variant="outline">
+            Submit Another Response
+          </Button>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <>
