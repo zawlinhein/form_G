@@ -39,8 +39,8 @@ const textContentVarients = cva("", {
   variants: {
     size: {
       small: "text-sm",
-      medium: "text-base",
-      large: "text-lg",
+      medium: "text-lg",
+      large: "text-2xl",
     },
     weight: {
       normal: "font-normal",

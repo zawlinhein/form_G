@@ -9,3 +9,6 @@ export function cn(...inputs: ClassValue[]) {
 export function generateId(): string {
   return uuidv4();
 }
+
+export const delay = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));

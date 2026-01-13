@@ -3,6 +3,7 @@ import Link from "next/link";
 import HeaderProfile from "./HeaderProfile";
 import { Suspense } from "react";
 import ThemeSwitch from "./ThemeSwitch";
+import HeaderProfileSkeleton from "./_loadingComponents/HeaderProfileSkeleton";
 
 const Header = async ({ formId }: { formId: string }) => {
   return (
@@ -46,7 +47,7 @@ const Header = async ({ formId }: { formId: string }) => {
             <div>
               <ThemeSwitch />
             </div>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<HeaderProfileSkeleton />}>
               <HeaderProfile />
             </Suspense>
           </div>

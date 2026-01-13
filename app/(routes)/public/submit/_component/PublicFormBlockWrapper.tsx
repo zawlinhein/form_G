@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { formBlocks } from "@/lib/blocks";
 import { FormBlockInstance, FormValues } from "@/types/form.blocks.types";
-import { is } from "drizzle-orm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CheckCircle2 } from "lucide-react";
 
@@ -19,6 +18,7 @@ const PublicFormBlockWrapper = ({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { register, handleSubmit, setValue } = useForm<FormValues>();
+
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     setErrors({});
     let isErr = false;
@@ -62,9 +62,6 @@ const PublicFormBlockWrapper = ({
             Your response has been submitted successfully. We appreciate your
             time.
           </p>
-          <Button onClick={() => setIsSubmitted(false)} variant="outline">
-            Submit Another Response
-          </Button>
         </Card>
       </div>
     );
@@ -72,7 +69,7 @@ const PublicFormBlockWrapper = ({
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {blocks.map((block) => {
           const FormComponent = formBlocks[block.blockType].formComponent;
           return (

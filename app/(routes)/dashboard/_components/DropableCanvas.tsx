@@ -8,6 +8,7 @@ import { Plus } from "lucide-react";
 import CanvasComponentWrapper from "./CanvasComponentWrapper";
 import { SampleCanvasComponent } from "@/components/blocks/SampleCanvasComponent";
 import { act, useState } from "react";
+import DropableCanvasSkeleton from "./_loadingComponents/DropableCanvasSkeleton";
 
 const DropableCanvas = () => {
   const { blocks, setBlocks, loading, formData } = useBuilder();
@@ -48,7 +49,7 @@ const DropableCanvas = () => {
     },
   });
 
-  if (loading) return <div>loading.....</div>;
+  if (loading) return <DropableCanvasSkeleton />;
   return (
     <div
       className={cn(

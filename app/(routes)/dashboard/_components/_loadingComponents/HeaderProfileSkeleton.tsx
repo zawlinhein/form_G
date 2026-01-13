@@ -6,27 +6,21 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { delay } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const HeaderProfile = async () => {
-  const { getUser } = getKindeServerSession();
-  const user = await getUser();
-  await delay(500);
+const HeaderProfileSkeleton = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="flex items-center gap-2 hover:bg-muted rounded-lg px-3 py-2 transition-colors">
-          <Avatar className="h-8 w-8 flex items-center justify-center rounded-full bg-primary/50">
-            <AvatarFallback className="text-primary-foreground text-sm">
-              {user?.given_name?.charAt(0)}
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+              <Skeleton className="h-8 w-8 rounded-full bg-muted-foreground" />
             </AvatarFallback>
           </Avatar>
           <div className="hidden md:block text-left">
-            <p className="text-sm font-medium text-foreground">
-              {user?.given_name} {user?.family_name}
-            </p>
-            <p className="text-xs text-muted-foreground">{user?.email}</p>
+            <Skeleton className="h-4 w-20 bg-muted-foreground" />
+            <Skeleton className="h-3 w-24 bg-muted-foreground" />
           </div>
         </button>
       </DropdownMenuTrigger>
@@ -39,4 +33,4 @@ const HeaderProfile = async () => {
   );
 };
 
-export default HeaderProfile;
+export default HeaderProfileSkeleton;

@@ -6,9 +6,10 @@ import {
   formResponses,
   forms,
   formSettings,
+  FormWithSetting,
 } from "@/database/schema";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
-import { count, eq, sum, gt, and } from "drizzle-orm";
+import { count, eq, sum, gt, and, sql } from "drizzle-orm";
 import { z } from "zod";
 
 export type ActionResponse<T = undefined> =
@@ -120,13 +121,13 @@ export const createForm = async (
         message: "User not authenticated",
       };
     }
-    const [formSetting] = await db
+    /*     const [formSetting] = await db
       .insert(formSettings)
       .values({
         primaryColor: "#9B2C2C",
         backgroundColor: "#FAF7F5",
       })
-      .returning();
+      .returning(); */
     const [newForm] = await db
       .insert(forms)
       .values({
@@ -135,7 +136,7 @@ export const createForm = async (
         name: data.name,
         description: data.description || "",
         jsonBlock: "[]",
-        settingId: formSetting.id,
+        settingId: "15f8d67a-465f-48e6-bd9b-96977282da6f",
       })
       .returning();
     return {
@@ -330,21 +331,33 @@ export const saveResponse = async (data: {
       };
     }
 
-    const [response] = await db
-      .insert(formResponses)
-      .values({
-        formId: formId,
-        responseData: responses,
-        createdAt: new Date(),
-      })
-      .returning();
+    await db.transaction(async (tx) => {
+      const [response] = await tx
+        .insert(formResponses)
+        .values({
+          formId,
+          responseData: responses,
+          createdAt: new Date(),
+        })
+        .returning();
 
-    if (!response) {
-      return {
-        success: false,
-        message: "Failed to save response.",
-      };
-    }
+      if (!response) {
+        throw new Error("Failed to insert response");
+      }
+
+      const [form] = await tx
+        .update(forms)
+        .set({
+          responses: sql`${forms.responses} + 1`,
+        })
+        .where(eq(forms.id, formId))
+        .returning();
+
+      if (!form) {
+        throw new Error("Failed to update form response count");
+      }
+    });
+
     return {
       success: true,
       message: "Response saved successfully",
@@ -434,5 +447,21 @@ export const deleteFormById = async (
       success: false,
       message: "An unexpected error occurred while deleting the form.",
     };
+  }
+};
+
+export const addViewsCount = async (formId: string): Promise<void> => {
+  try {
+    if (!formId) {
+      return;
+    }
+    await db
+      .update(forms)
+      .set({
+        views: sql`${forms.views} + 1`,
+      })
+      .where(eq(forms.id, formId));
+  } catch (error) {
+    console.error("Error adding view count:", error);
   }
 };

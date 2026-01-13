@@ -7,7 +7,7 @@ const MainContext = () => {
     <div className="flex-1 overflow-hidden flex">
       {/* Center - Canvas Area */}
       <div className="flex-1 overflow-auto p-4 sm:p-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-4xl mx-auto bg-background">
           <DropableCanvas />
         </div>
       </div>
