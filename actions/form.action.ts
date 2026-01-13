@@ -121,13 +121,13 @@ export const createForm = async (
         message: "User not authenticated",
       };
     }
-    /*     const [formSetting] = await db
+    const [formSetting] = await db
       .insert(formSettings)
       .values({
         primaryColor: "#9B2C2C",
         backgroundColor: "#FAF7F5",
       })
-      .returning(); */
+      .returning();
     const [newForm] = await db
       .insert(forms)
       .values({
@@ -136,7 +136,7 @@ export const createForm = async (
         name: data.name,
         description: data.description || "",
         jsonBlock: "[]",
-        settingId: "15f8d67a-465f-48e6-bd9b-96977282da6f",
+        settingId: formSetting.id,
       })
       .returning();
     return {
